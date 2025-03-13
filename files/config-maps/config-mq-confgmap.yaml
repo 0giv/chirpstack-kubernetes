@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-configmap
+  namespace: chirpstack
+data:
+  mosquitto.conf: |-
+
+    persistence true
+    persistence_location /mosquitto/data/
+    log_dest stdout
+
+    listener 8883
+    allow_anonymous true
+#    require_certificate false
+
+#    tls_version tlsv1.3
+#    cafile /etc/mosquitto/certs/rootCA.crt
+#    keyfile /etc/mosquitto/certs/server.key
+#    certfile /etc/mosquitto/certs/server.crt

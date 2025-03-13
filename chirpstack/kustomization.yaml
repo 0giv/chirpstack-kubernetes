@@ -1,0 +1,97 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: chirpstack
+
+configMapGenerator:
+  - name: chirpstack-regions
+    files:
+      - ./conf/region_as923_2.toml
+      - ./conf/region_as923_3.toml
+      - ./conf/region_as923_4.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions1
+    files:
+      - ./conf/region_as923.toml
+      - ./conf/region_au915_0.toml
+      - ./conf/region_au915_1.toml
+      - ./conf/region_au915_2.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions2
+    files:
+      - ./conf/region_au915_3.toml
+      - ./conf/region_au915_4.toml
+      - ./conf/region_au915_5.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions3
+    files:
+      - ./conf/region_au915_6.toml
+      - ./conf/region_au915_7.toml
+      - ./conf/region_cn470_0.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions4
+    files:
+      - ./conf/region_cn470_1.toml
+      - ./conf/region_cn470_2.toml
+      - ./conf/region_cn470_3.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions5
+    files:
+      - ./conf/region_cn470_4.toml
+      - ./conf/region_cn470_5.toml
+      - ./conf/region_cn470_6.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions6
+    files:
+      - ./conf/region_cn470_7.toml
+      - ./conf/region_cn470_8.toml
+      - ./conf/region_cn470_9.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions7
+    files:
+      - ./conf/region_cn470_10.toml
+      - ./conf/region_cn470_11.toml
+      - ./conf/region_cn779.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions8
+    files:
+      - ./conf/region_eu433.toml
+      - ./conf/region_in865.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions9
+    files:
+      - ./conf/region_kr920.toml
+      - ./conf/region_ru864.toml
+      - ./conf/region_us915_0.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions10
+    files:
+      - ./conf/region_us915_1.toml
+      - ./conf/region_us915_2.toml
+      - ./conf/region_us915_3.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions11
+    files:
+      - ./conf/region_us915_4.toml
+      - ./conf/region_us915_5.toml
+      - ./conf/region_us915_6.toml
+    options:
+      disableNameSuffixHash: true
+  - name: chirpstack-regions12
+    files:
+      - ./conf/region_us915_7.toml
+      - ./conf/region_eu868.toml
+    options:
+      disableNameSuffixHash: true
+      

@@ -1,0 +1,417 @@
+# Default values for ChirpStack.
+
+# Global Docker registry secret names as an array
+imagePullSecrets: []
+
+# Overrides for the name and full name of the chart
+nameOverride: ""
+fullnameOverride: ""
+
+# Configuration values for the ChirpStack LNS
+chirpstack:
+
+  # Name and replica count of the ChirpStack core app
+  name: chirpstack
+  replicaCount: 1
+
+  # Overrides for the default container command and args
+  command: []
+  args: ["--config", "/etc/chirpstack"]
+
+  # Log level of ChirpStack (must be either "trace", "debug", "info", "warn" or "error")
+  logLevel: info
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  # Secret used for generating login and API tokens
+  # Replace it with e.g. the output of "openssl rand -base64 32"
+  apiSecret: "VALUE"
+
+  # Extra environment variables to set in the containers
+  extraEnvs: []
+    # - name: MY_VAR
+    #   value: myValue
+
+  # Overrides for the image being pulled from the Docker registry
+  image:
+    repository: chirpstack/chirpstack
+    pullPolicy: IfNotPresent
+    tag: "4"
+
+  # Configuration for connecting to the PostgreSQL database
+  postgres:
+    # PostgreSQL user credentials
+    user: postgres
+    password: postgres
+
+    # Hostname of the database server
+    host: chirpstack-postgres-postgresql.chirpstack-postgres.svc.cluster.local
+
+    # Port of the database server
+    port: 5432
+
+    # Name of the database to use for ChirpStack
+    database: chirpstack
+
+    # SSL mode options:
+    #  * disable - no SSL
+    #  * require - Always SSL (skip verification)
+    #  * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
+    #  * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
+    sslMode: disable
+
+  # Configuration for connecting to the Redis
+  redis:
+    # Hostnames of the Redis servers (set multiple hostnames when connecting to a cluster)
+    servers:
+      - redis://:redis@chirpstack-redis-headless.chirpstack-redis:6379
+
+    # Whether to connect to Redis with TLS
+    tlsEnabled: false
+
+    # Whether the hostnames are a Redis Cluster instance
+    cluster: false
+
+  # Configuration for the LoRa regions
+  regions:
+    # Global MQTT gateway backend configuration
+    mqtt:
+      # Hostname and port of the MQTT broker where the LoRaWAN gateways are connected
+      host: mosquitto.chirpstack.svc.cluster.local
+      port: 8883
+
+    # Configuration for each LoRaWAN region
+    as923_2:
+      mqtt:
+        eventTopic: as923_2/gateway/+/event/+
+        commandTopic: as923_2/gateway/{{ gateway_id }}/command/{{ command }}
+
+    as923_3:
+      mqtt:
+        eventTopic: as923_3/gateway/+/event/+
+        commandTopic: as923_3/gateway/{{ gateway_id }}/command/{{ command }}
+    as923_4:
+      mqtt:
+        eventTopic: as923_4/gateway/+/event/+
+        commandTopic: as923_4/gateway/{{ gateway_id }}/command/{{ command }}
+    as923:
+      mqtt:
+        eventTopic: as923/gateway/+/event/+
+        commandTopic: as923/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_0:
+      mqtt:
+        eventTopic: au915_0/gateway/+/event/+
+        commandTopic: au915_0/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_1:
+      mqtt:
+        eventTopic: au915_1/gateway/+/event/+
+        commandTopic: au915_1/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_2:
+      mqtt:
+        eventTopic: au915_2/gateway/+/event/+
+        commandTopic: au915_2/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_3:
+      mqtt:
+        eventTopic: au915_3/gateway/+/event/+
+        commandTopic: au915_3/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_4:
+      mqtt:
+        eventTopic: au915_4/gateway/+/event/+
+        commandTopic: au915_4/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_5:
+      mqtt:
+        eventTopic: au915_5/gateway/+/event/+
+        commandTopic: au915_5/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_6:
+      mqtt:
+        eventTopic: au915_6/gateway/+/event/+
+        commandTopic: au915_6/gateway/{{ gateway_id }}/command/{{ command }}
+    au915_7:
+      mqtt:
+        eventTopic: au915_7/gateway/+/event/+
+        commandTopic: au915_7/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_0:
+      mqtt:
+        eventTopic: cn470_0/gateway/+/event/+
+        commandTopic: cn470_0/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_1:
+      mqtt:
+        eventTopic: cn470_1/gateway/+/event/+
+        commandTopic: cn470_1/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_2:
+      mqtt:
+        eventTopic: cn470_2/gateway/+/event/+
+        commandTopic: cn470_2/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_3:
+      mqtt:
+        eventTopic: cn470_3/gateway/+/event/+
+        commandTopic: cn470_3/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_4:
+      mqtt:
+        eventTopic: cn470_4/gateway/+/event/+
+        commandTopic: cn470_4/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_5:
+      mqtt:
+        eventTopic: cn470_5/gateway/+/event/+
+        commandTopic: cn470_5/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_6:
+      mqtt:
+        eventTopic: cn470_6/gateway/+/event/+
+        commandTopic: cn470_6/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_7:
+      mqtt:
+        eventTopic: cn470_7/gateway/+/event/+
+        commandTopic: cn470_7/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_8:
+      mqtt:
+        eventTopic: cn470_8/gateway/+/event/+
+        commandTopic: cn470_8/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_9:
+      mqtt:
+        eventTopic: cn470_9/gateway/+/event/+
+        commandTopic: cn470_9/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_10:
+      mqtt:
+        eventTopic: cn470_10/gateway/+/event/+
+        commandTopic: cn470_10/gateway/{{ gateway_id }}/command/{{ command }}
+    cn470_11:
+      mqtt:
+        eventTopic: cn470_11/gateway/+/event/+
+        commandTopic: cn470_11/gateway/{{ gateway_id }}/command/{{ command }}
+    cn779:
+      mqtt:
+        eventTopic: cn779/gateway/+/event/+
+        commandTopic: cn779/gateway/{{ gateway_id }}/command/{{ command }}
+    eu443:
+      mqtt:
+        eventTopic: eu443/gateway/+/event/+
+        commandTopic: eu443/gateway/{{ gateway_id }}/command/{{ command }}
+    eu868:
+      mqtt:
+        eventTopic: eu868/gateway/+/event/+
+        commandTopic: eu868/gateway/{{ gateway_id }}/command/{{ command }}
+    in865:
+      mqtt:
+        eventTopic: in865/gateway/+/event/+
+        commandTopic: in865/gateway/{{ gateway_id }}/command/{{ command }}
+    kr920:
+      mqtt:
+        eventTopic: kr920/gateway/+/event/+
+        commandTopic: kr920/gateway/{{ gateway_id }}/command/{{ command }}
+    ru864:
+      mqtt:
+        eventTopic: ru864/gateway/+/event/+
+        commandTopic: ru864/gateway/{{ gateway_id }}/command/{{ command }}
+    us915_0:
+      mqtt:
+        eventTopic: us915_0/gateway/+/event/+
+        commandTopic: us915_0/gateway/{{ gateway_id }}/command/{{ command }}
+    us915_1:
+      mqtt:
+        eventTopic: us915_1/gateway/+/event/+
+        commandTopic: us915_1/gateway/{{ gateway_id }}/command/{{ command }}
+  # LNS network configuration
+  network:
+    # 3 bytes network identifier encoded as hex
+    netId: "000000"
+
+    # LoRa regions enabled on this instance
+    enabledRegions:
+      - as923
+      - as923_2
+      - as923_3
+      - as923_4
+      - au915_0
+      - au915_1
+      - au915_2
+      - au915_3
+      - au915_4
+      - au915_5
+      - au915_6
+      - au915_7
+      - cn470_0
+      - cn470_1
+      - cn470_2
+      - cn470_3
+      - cn470_4
+      - cn470_5
+      - cn470_6
+      - cn470_7
+      - cn470_8
+      - cn470_9
+      - cn470_10
+      - cn470_11
+      - cn779
+      - eu443
+      - eu868
+      - in865
+      - kr920
+      - ru864
+      - us915_0
+      - us915_1
+      - us915_2
+      - us915_3
+      - us915_4
+      - us915_5
+      - us915_6
+      - us915_7
+
+
+
+  # Configuration of the ChirpStack dashboard server
+  http:
+    port: 8080
+    containerPort: 8080
+
+  # Configuration of the ChirpStack metrics server
+  metrics:
+    enabled: false
+    port: 8081
+
+  # Extra config files that are mounted in the configuration directory
+  extraConfigFiles: {}
+    # kafka.toml: |
+    #   [integration]
+    #     enabled=["kafka"]
+    #
+    #     [integration.kafka]
+    #       brokers=["localhost:9092"]
+    #       topic="chirpstack"
+
+  # Configuration of the ingress to the dashboard
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      # - host: chirpstack.example.com
+      #   paths:
+      #     - path: /
+      #       pathType: Prefix
+    tls: []
+      # - secretName: my-certificate
+      #   hosts:
+      #     - chirpstack.example.com
+
+  # Configuration of the main ChirpStack service
+  service:
+    type: LoadBalancer
+    annotations: {}
+    spec: {}
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Configuration values for the ChirpStack REST API bridge
+chirpstackRestApi:
+  # Whether the REST API service is deployed
+  enabled: false
+
+  # Name and replica count of the ChirpStack REST API app
+  name: chirpstack-rest-api
+  replicaCount: 1
+
+  # Overrides for the default container command and args
+  command: []
+  args: []
+
+  # Extra environment variables to set in the containers
+  extraEnvs: []
+    # - name: MY_VAR
+    #   value: myValue
+
+  # Overrides for the image being pulled from the Docker registry
+  image:
+    repository: chirpstack/chirpstack-rest-api
+    pullPolicy: IfNotPresent
+    tag: "4"
+
+  # Configuration of the ChirpStack REST API server
+  http:
+    # Indicates that the gRPC interface is not secured using a TLS certificate
+    insecure: true
+
+    # CORS AllowedOrigins header value
+    cors: "0.0.0.0"
+
+    port: 8090
+    containerPort: 8090
+
+  # Configuration of the ingress to the dashboard
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      # - host: chirpstack-api.example.com
+      #   paths:
+      #     - path: /
+      #       pathType: Prefix
+    tls: []
+      # - secretName: my-certificate
+      #   hosts:
+      #     - chirpstack.example.com
+
+  # Configuration of the main ChirpStack service
+  service:
+    type: ClusterIP
+    annotations: {}
+    spec: {}
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

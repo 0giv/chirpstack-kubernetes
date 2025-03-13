@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: chirpstack-gateway-bridge
+  name: chirpstack-gateway-bridge
+  namespace: chirpstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chirpstack-gateway-bridge
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: chirpstack-gateway-bridge
+    spec:
+      containers:
+      - image: chirpstack/chirpstack-gateway-bridge:4.0
+        imagePullPolicy: ""
+        name: chirpstack-gateway-bridge
+        ports:
+        - containerPort: 1700
+          protocol: UDP
+        volumeMounts:
+          - name: config-gateway-bridge-cm
+            mountPath: /etc/chirpstack-gateway-bridge
+          
+      restartPolicy: Always
+    
+      volumes:
+          - name: config-gateway-bridge-cm
+            configMap:
+                name: config-gateway-bridge
+
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gateway-bridge-hpa
+  namespace: chirpstack
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: chirpstack-gateway-bridge
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80

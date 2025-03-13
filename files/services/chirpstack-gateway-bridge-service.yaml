@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: chirpstack-gateway-bridge
+  name: chirpstack-gateway-bridge
+  namespace: chirpstack
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "1701"
+    port: 1701
+    protocol: UDP
+    targetPort: 1700
+    nodePort: 30002
+  selector:
+    io.kompose.service: chirpstack-gateway-bridge
+status:
+  loadBalancer: {}

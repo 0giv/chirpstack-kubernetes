@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-data
+  namespace: chirpstack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi  
+  storageClassName: standard  
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-logs
+  namespace: chirpstack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi  
+  storageClassName: standard  
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    io.kompose.service: mosquitto
+  name: mosquitto
+  namespace: chirpstack
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      io.kompose.service: mosquitto
+  template:
+    metadata:
+      labels:
+        io.kompose.service: mosquitto
+    spec:
+
+      containers:
+      - image: eclipse-mosquitto:latest
+        name: mosquitto
+        ports:
+        - containerPort: 8883
+        volumeMounts:
+        - name: mosquitto-config
+          mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+        - name: mosquitto-data
+          mountPath: /mosquitto/data
+        - name: mosquitto-logs
+          mountPath: /mosquitto/log
+
+      restartPolicy: Always
+      volumes:
+      - name: mosquitto-certs
+        secret:
+          secretName: mqtt-tls-secret 
+          defaultMode: 0444
+      - name: mosquitto-config
+        configMap:
+          name: mosquitto-configmap
+      - name: mosquitto-data
+        persistentVolumeClaim:
+          claimName: mosquitto-data
+      - name: mosquitto-logs
+        persistentVolumeClaim:
+          claimName: mosquitto-logs
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mosquitto-hpa
+  namespace: chirpstack
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: mosquitto
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
