@@ -268,8 +268,9 @@ chirpstack:
 
   # Configuration of the ChirpStack metrics server
   metrics:
-    enabled: false
+    enabled: true
     port: 8081
+    containerPort: 8081
 
   # Extra config files that are mounted in the configuration directory
   extraConfigFiles: {}

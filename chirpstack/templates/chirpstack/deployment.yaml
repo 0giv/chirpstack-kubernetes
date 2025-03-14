@@ -52,7 +52,7 @@ spec:
               protocol: TCP
             {{- if .Values.chirpstack.metrics.enabled }}
             - name: metrics
-              containerPort: {{ .Values.chirpstack.metrics.port }}
+              containerPort: {{ .Values.chirpstack.metrics.containerPort }}
               protocol: TCP
             {{ end }}
           livenessProbe:

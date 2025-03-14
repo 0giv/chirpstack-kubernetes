@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: iot-tb-dev
+spec:
+  acme:
+    email: YOUR_EMAİL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: iot-tb-dev-issuer-account-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx

@@ -18,6 +18,12 @@ spec:
       targetPort: {{ .Values.chirpstack.http.containerPort }}
       protocol: TCP
       name: dashboard
+    {{- if .Values.chirpstack.metrics.enabled }}
+    - port: {{ .Values.chirpstack.metrics.port }}
+      targetPort: {{ .Values.chirpstack.metrics.containerPort }}
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "chirpstack.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: core

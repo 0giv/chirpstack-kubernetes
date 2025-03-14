@@ -20,9 +20,9 @@ helm upgrade --install chirpstack-redis oci://registry-1.docker.io/bitnamicharts
     -f ./values/redis-values.yaml --namespace chirpstack-redis --create-namespace
 ```
 - If you want to update your redis yaml, take it from here https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml. In this yaml there is no confuguration but password at line 147 auth.password section. 
+
 ## 3. Install PostgreSQL
-Deploy the ChirpStack PostgreSQL component using Helm charts.
-Additionally, the following configuration is used for PostgreSQL:
+In files/values/postgres-values.yaml there is a script for chirpstack database confugiration:
 ```yaml
 scripts:
   create_databases.sql: |
@@ -46,7 +46,11 @@ Apply the necessary Kubernetes service and deployment files for ChirpStack.
 kubectl apply -f services
 kubectl apply -f deployments
 ```
+- After these commands apply this for Pod Disruption Budget:
 
+```sh
+kubectl apply -f PodDisruptionBudget.yaml
+```
 ## 5. Deploy ChirpStack
 
 ```sh
@@ -54,7 +58,8 @@ cd ..
 cd chirpstack
 ```
 
-Before installation do **NOT** forget to create a api key for chripstack core with this command.
+Before installation do **NOT** forget to create a api key for chripstack core with this command. 
+Change the value of apiSecret at chirpstack/values.yaml line 31.
 
 ```sh
 openssl rand -base64 32
@@ -67,7 +72,6 @@ for postgres at line 45
 for redis at line 67
 
 
-Change the value of apiSecret at chirpstack/values.yaml line 31.
 
 For applying the regions for Chirpstack use this command.
 ```sh
@@ -90,6 +94,31 @@ helm repo update
 helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
     -f ./values/ingress.yaml --namespace chirpstack
 ```
+
+## 6.1 Cert-Manager Install (If Needed)
+
+```sh
+helm repo add jetstack https://charts.jetstack.io --force-update
+helm repo update 
+
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.17.0 \
+  --set crds.enabled=true
+
+```
+
+You can for look the latest installation of cert manager in here:
+https://cert-manager.io/docs/installation/helm/
+
+- In cert-manager/cert-manager.yaml file you have to change the spec.acme.email section with your email
+
+```sh
+email: YOUR_EMAİL
+```
+
 In values at line 1216 tcp section there is a configuration for mqtt and chirpstack. Also dont forget to change your dns in deployment/ingress.yaml
 ```sh
 tcp: 
@@ -102,6 +131,35 @@ spec:
   rules:
     - host: DNS_NAME
 ```
+
+## OPTINAL | Prometheus Deploy for Chirpstack Core 
+
+
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+helm upgrade --install prometheus prometheus-community/prometheus \
+    -f ./values/prometheus.yaml --namespace chirpstack
+```
+
+- If you want to update your prometheus yaml, take it from here https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus 
+    - In files/values/prometheus.yaml file at line 797 , if you want to add or change the metrics creds:
+
+    ```sh
+        scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets:
+            - localhost:9090
+      - job_name: chirpstack
+        static_configs:
+          - targets:
+            - chirpstack-core.chirpstack.svc.cluster.local:8081
+    ```     
+
+
+
 ## 7. Section of Uninstalling ChirpStack
 To remove ChirpStack and its dependencies, use the following commands:
 

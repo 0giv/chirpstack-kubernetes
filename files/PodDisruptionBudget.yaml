@@ -1,0 +1,14 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: chirpstack-pdb
+  namespace: chirpstack
+spec:
+  minAvailable: 2
+  selector:
+    matchExpressions:
+      - key: io.kompose.service
+        operator: In
+        values:
+          - chirpstack-gateway-bridge
+          - mosquitto
